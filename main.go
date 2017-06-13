@@ -14,14 +14,24 @@ func main() {
 	listener, err := net.ListenTCP("tcp", tcpAddr)
 	checkError(err)
 	for {
+		fmt.Println("listen start")
 		conn, err := listener.Accept()
+		fmt.Println("listen now")
 		if err != nil {
+			fmt.Println("listen error")
+			fmt.Println(err)
 			continue
 		}
-		daytime := time.Now().String()
-		conn.Write([]byte(daytime))
-		conn.Close()
+		fmt.Println("listen ok")
+		go handleClient(conn)
 	}
+}
+
+func handleClient(conn net.Conn) {
+	fmt.Println("handle start")
+	defer conn.Close()
+	daytime := time.Now().String()
+	conn.Write([]byte(daytime))
 }
 
 func checkError(err error) {
