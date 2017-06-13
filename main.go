@@ -20,12 +20,12 @@ func main() {
 		if err != nil {
 			continue
 		}
+
 		daytime := time.Now().String()
 		_, err = conn.Write([]byte(daytime))
 		chkErr(err, "Write")
 
-		err = conn.Close()
-		chkErr(err, "Close")
+		_ = conn.Close()
 	}
 
 }
