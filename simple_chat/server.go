@@ -7,18 +7,20 @@ import (
 	"time"
 )
 
-var running = true
-
 func sender(conn net.Conn) {
+
 }
 
 func receiver(conn net.Conn) {
-	for running {
-		buf := make([]byte, 1024)
+	_ = conn.SetReadDeadline(time.Now().Add(2 * time.Minute))
+	buf := make([]byte, 560)
+
+	for {
 		n, err := conn.Read(buf)
-		fmt.Println("received")
 		util.ChkErr(err, "Receiver read")
 		fmt.Println(string(buf[:n]))
+
+		buf = make([]byte, 560)
 	}
 }
 
@@ -30,13 +32,14 @@ func Server() {
 	li, err := net.ListenTCP("tcp", tcpAddr)
 	util.ChkErr(err, "tcpaddr")
 
-	conn, err := li.Accept()
-	util.ChkErr(err, "accept")
+	for {
+		conn, err := li.Accept()
+		if err != nil {
+			fmt.Println("Fail to connect.")
+			continue
+		}
 
-	go receiver(conn)
-	go sender(conn)
-
-	for running {
-		time.Sleep(1 * 1e9)
+		go receiver(conn)
+		go sender(conn)
 	}
 }
