@@ -1,11 +1,13 @@
 package main
 
 import (
-	"./daytime"
+	_ "./daytime"
 	_ "./http"
+	"./simple_chat"
 )
 
 func main() {
 	//http.Server()
-	daytime.Server()
+	//daytime.Server()
+	simple_chat.Server()
 }
